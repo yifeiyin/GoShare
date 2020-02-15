@@ -1,9 +1,9 @@
 {
-  "devToolsPort": 19002,
+  "devToolsPort": 19003,
   "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 37124,
-  "expoServerNgrokUrl": "https://5g-hrb.yifeiyin.findshare.exp.direct",
-  "packagerNgrokUrl": "https://packager.5g-hrb.yifeiyin.findshare.exp.direct",
-  "ngrokPid": 37146
+  "packagerPort": 19004,
+  "packagerPid": 12796,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
