@@ -40,9 +40,10 @@ export default class MapScreen extends React.Component {
 
   render() {
     return (
-      <SafeAreaView>
-        <Text>MapScreen</Text>
-        <MapView style={{ width: '100%', height: '90%', backgroundColor: '#ddd' }}
+      <View>
+        <MapView
+        showsUserLocation={true}
+        style={{ width: '100%', height: '100%', backgroundColor: '#ddd' }}
           initialRegion={{
             latitude: 43.785,
             longitude: -79.188,
@@ -61,7 +62,7 @@ export default class MapScreen extends React.Component {
             ))
           }
         </MapView>
-      </SafeAreaView>
+      </View>
     );
   }
 }
