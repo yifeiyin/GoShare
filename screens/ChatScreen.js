@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform, KeyboardAvoidngView, SafeAreaView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../firebase';
+import { CurrentUser } from '../helper';
 
 export default class ChatScreen extends React.Component {
   
@@ -11,8 +12,8 @@ export default class ChatScreen extends React.Component {
 
   get user() {
     return {
-      _id: Firebase.uid,
-      name: 'a'
+      id: Firebase.uid,
+      name: CurrentUser.get()
     }
   }
 
@@ -21,10 +22,6 @@ export default class ChatScreen extends React.Component {
         this.setState(previous => ({
           message: GiftedChat.append(previous.message, message)
         })));
-  }
-
-  componentWillMount() {
-    Firebase.off();
   }
   
   render() {

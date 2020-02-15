@@ -35,9 +35,10 @@ class Firebase {
     addUser(name) {
         firebase.database().ref('users/').push({
           username: name,
+          chat: '',
         });
     }
-
+    
     checkAuth =()=>{
         firebase.auth().onAuthStateChanged( user => {
             if (!user){
