@@ -5,30 +5,32 @@ import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView } from 'react-na
 import MapView, { Marker } from 'react-native-maps';
 
 // DOCUMENTATION: https://radar.io/documentation/sdk#react-native
-import Radar from 'react-native-radar';
+// import Radar from 'react-native-radar';
+
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 
 
 export default class MapScreen extends React.Component {
 
   componentDidMount() {
-    Radar.setUserId(this.state.userId);
-    Radar.requestPermissions(true);
+    this._getLocationAsync();
+  }
 
-    // track the user's location once in the foreground
-    Radar.trackOnce().then((result) => {
-      // do something with result.events, result.user.geofences
-    }).catch((err) => {
-      // optionally, do something with err
-    });
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      alert('Permission to access location was denied');
+    }
 
-    // start tracking the user's location in the background
-    Radar.startTracking();
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ markers: [...this.state.markers, locationToMarker(location, 'blue') ] });
   }
 
   state = {
     markers: [
       {
-        coordinate: {
+        coords: {
           latitude: 43.78767,
           longitude: -79.19111,
         }, title: 'Test', description: 'desdsgfdg rgrg'
@@ -50,9 +52,11 @@ export default class MapScreen extends React.Component {
           {
             this.state.markers.map(marker => (
               <Marker
-                coordinate={marker.coordinate}
+                key={marker.title}
+                coordinate={marker.coords}
                 title={marker.title}
                 description={marker.description}
+                pinColor={marker.color}
               />
             ))
           }
@@ -62,22 +66,10 @@ export default class MapScreen extends React.Component {
   }
 }
 
-// receive events
-Radar.on('events', (result) => {
-  // do something with result.events, result.user
-  console.log(result);
-
-});
-
-// receive location updates
-Radar.on('location', (result) => {
-  // do something with result.location, result.user
-  console.log(result);
-});
-
-// receive errors
-Radar.on('error', (err) => {
-  // do something with err
-  console.log(result);
-
-});
+function locationToMarker(location, color) {
+  return {
+    coords: location.coords,
+    title: 'Your Location',
+    color: color || 'red',
+  };
+}
