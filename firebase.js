@@ -21,9 +21,14 @@ class Firebase {
         }
     };
 
-    writeUserData(name) {
-        firebase.database().ref('users/').push({
-          username: name,
+    onItemsChange(callback) {
+        firebase.database().ref('items/').on('value', callback);
+    }
+
+    updateItem(itemId, coords, username) {
+        firebase.database().ref('items/' + itemId).set({
+          coords: coords,
+          username: username,
         });
     }
 

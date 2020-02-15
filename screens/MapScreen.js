@@ -10,22 +10,51 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
+import Firebase from '../firebase';
+import { CurrentUser } from '../helper';
 
 export default class MapScreen extends React.Component {
 
   componentDidMount() {
-    this._getLocationAsync();
+    this.firebaseItemsLister = Firebase.onItemsChange((data) => {
+      data = data.val();
+      console.log(data);
+      let markers = [];
+      for (let key in data) {
+        let item = data[key];
+        markers.push({ coords: item.coords, title: item.username, description: key });
+      }
+      this.setState({ markers });
+    });
   }
 
-  _getLocationAsync = async () => {
+  componentWillUnmount() {
+    Firebase.off(this.firebaseItemsLister);
+  }
+
+  currentItemsHolding = [
+    'Lightning_10'
+  ];
+
+  startRecordingLocation = async () => {
+    const location = await this.getUserLocation();
+
+    this.currentItemsHolding.forEach(item => {
+      Firebase.updateItem(item, location.coords, CurrentUser.get() || 'Test User');
+    });
+  };
+
+  getUserLocation = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       alert('Permission to access location was denied');
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ markers: [...this.state.markers, locationToMarker(location, 'blue') ] });
-  }
+    return await Location.getCurrentPositionAsync({});
+  };
+
+
+  // this.setState({ markers: [...this.state.markers, locationToMarker(location, 'blue') ] });
 
   state = {
     markers: [
