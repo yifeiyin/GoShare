@@ -9,11 +9,15 @@ import { createAppContainer } from 'react-navigation';
 import AuthScreen from './screens/AuthScreen';
 import MapScreen from './screens/MapScreen';
 import RequestScreen from './screens/RequestScreen';
+import ChatListScreen from './screens/ChatListScreen';
+import ChatScreen from './screens/ChatScreen';
 
 const tabNavigator = createBottomTabNavigator({
   AuthScreen,
   MapScreen,
   RequestScreen,
+  ChatListScreen,
+  ChatScreen,
 }, {
   initialRouteName: 'AuthScreen'
 });

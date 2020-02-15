@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
-import ActionSheet from 'react-native-custom-actionsheet'
-import DatePicker from '../datePicker'
+import ActionSheet from 'react-native-custom-actionsheet';
+import DatePicker from '../datePicker';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 const OPTION_1 = {
@@ -105,8 +105,8 @@ export default class RequestScreen extends React.Component {
         </View>
 
         <View style={styles.sendView}>
-          <TouchableOpacity 
-                style={styles.send} 
+          <TouchableOpacity
+                style={styles.send}
                 onPress={this.send}>
             <FontAwesome5 name='paper-plane' color='#514E5A' size={35} />
           </TouchableOpacity>
