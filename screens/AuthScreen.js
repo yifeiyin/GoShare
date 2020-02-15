@@ -12,7 +12,7 @@ export default class AuthScreen extends React.Component {
 
   next = () => {
     if (this.state.username != '') {
-      Firebase.writeUserData(this.state.username)
+      Firebase.addUser(this.state.username)
       this.props.navigation.navigate("MapScreen",{username: this.state.username})
     } else {
       Alert.alert("Warning",
