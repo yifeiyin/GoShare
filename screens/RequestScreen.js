@@ -19,16 +19,16 @@ const OPTION_2 = {
 }
 
 export default class RequestScreen extends React.Component {
-  static navigationOptions = {
-    headerTitle: 'Request',
-  };
+  static navigationOptions = () => ({
+    headerTitle: 'Request as ' + CurrentUser.get(),
+  });
 
   holders = []
   chats = ''
 
   state = {
-    selectedItem: 'Please Select ...',
-    selectedPlace: 'Please Select ...',
+    selectedItem: 'Please Select',
+    selectedPlace: 'Please Select',
     datetime: new Date(),
     actionSheetOptions: OPTION_1,
   }
@@ -103,9 +103,9 @@ export default class RequestScreen extends React.Component {
   handlePress = (index) => {
     let options = this.state.actionSheetOptions.options;
     if (this.state.actionSheetOptions.title == OPTION_1.title) {
-      this.setState({ selectedItem: index == 0 ? 'None' : options[index] });
+      this.setState({ selectedItem: index == 0 ? 'Please Select' : options[index] });
     } else {
-      this.setState({ selectedPlace: index == 0 ? 'None' : options[index] });
+      this.setState({ selectedPlace: index == 0 ? 'Please Select' : options[index] });
     }
   }
 
@@ -122,7 +122,7 @@ export default class RequestScreen extends React.Component {
 
         <View style={styles.itemView}>
           <Text style={styles.itemText}>
-            I would like to request a ...
+            I would like to request a
             </Text>
 
           <Text style={styles.itemSelectedText}>
@@ -155,7 +155,7 @@ export default class RequestScreen extends React.Component {
 
         <View style={styles.whereView}>
           <Text style={styles.itemText}>
-            I would like to pick it up at ...
+            I would like to pick it up at
             </Text>
 
           <Text style={styles.itemSelectedText}>
