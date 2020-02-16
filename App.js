@@ -12,7 +12,7 @@ import RequestScreen from './screens/RequestScreen';
 import ChatListScreen from './screens/ChatListScreen';
 import ChatScreen from './screens/ChatScreen';
 
-const tabNavigator = createBottomTabNavigator({
+const tabNavigator = createStackNavigator({
   AuthScreen,
   MapScreen,
   RequestScreen,

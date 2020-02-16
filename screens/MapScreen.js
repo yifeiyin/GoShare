@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, AsyncStorage } from 'react-native';
 
 // DOCUMENTATION: https://github.com/react-native-community/react-native-maps#component-api
 import MapView, { Marker } from 'react-native-maps';
@@ -12,8 +12,12 @@ import * as Permissions from 'expo-permissions';
 
 import Firebase from '../firebase';
 import { CurrentUser } from '../helper';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default class MapScreen extends React.Component {
+  static navigationOptions = {
+    headerShown: false
+  };
 
   componentDidMount() {
     this.firebaseItemsLister = Firebase.onItemsChange((data) => {
@@ -81,7 +85,22 @@ export default class MapScreen extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
+        <View style={styles.signOutButton}>
+          <TouchableOpacity onPress={() => { AsyncStorage.removeItem('username'); this.props.navigation.goBack() }}>
+            <FontAwesome5 name='sign-out-alt' size={25} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.messagesButton}>
+          <TouchableOpacity onPress={() => { this.props.navigation.navigate('ChatListScreen'); }}>
+            <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>Messages</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.requestButton}>
+          <TouchableOpacity onPress={() => { this.props.navigation.navigate('RequestScreen'); }}>
+            <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>Request</Text>
+          </TouchableOpacity>
+        </View>
         <MapView
           showsUserLocation={true}
           style={{ width: '100%', height: '100%', backgroundColor: '#ddd' }}
@@ -126,3 +145,55 @@ function imageByName(name) {
   if (name.toLowerCase().startsWith('calculator')) { return require('../assets/calculator.png'); }
   if (name.toLowerCase().startsWith('power')) { return require('../assets/power.png'); }
 }
+
+const COMMON_STYLES = {
+  position: 'absolute',
+  zIndex: 100,
+  alignItems: 'center',
+  justifyContent: 'center',
+  shadowColor: 'black',
+  shadowRadius: 10,
+  shadowOffset: { width: 5 },
+  shadowOpacity: 0.1,
+};
+
+const height = 60;
+const width = 130;
+
+const styles = StyleSheet.create({
+  signOutButton: {
+    ...COMMON_STYLES,
+    left: 0,
+    top: 0,
+    backgroundColor: 'white',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginLeft: 10,
+    marginTop: 50,
+
+    color: '#444',
+
+    transform: [{ rotateY: '180deg' }],
+  },
+  messagesButton: {
+    ...COMMON_STYLES,
+    right: 15,
+    bottom: 30,
+    backgroundColor: '#47BB17',
+    color: 'white',
+    height: height,
+    width: width,
+    borderRadius: height / 2,
+  },
+  requestButton: {
+    ...COMMON_STYLES,
+    right: 15,
+    bottom: height * 1.2 + 30,
+    backgroundColor: '#47BB17',
+    color: 'white',
+    height: height,
+    width: width,
+    borderRadius: height / 2,
+  }
+});

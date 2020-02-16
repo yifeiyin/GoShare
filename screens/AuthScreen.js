@@ -1,52 +1,67 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Firebase from '../firebase'
 import { CurrentUser } from '../helper'
 
 export default class AuthScreen extends React.Component {
-  
+  static navigationOptions = {
+    headerShown: false
+  };
+
   state = {
     username: "",
+    loading: true,
   }
 
-  next = () => {
-    if (this.state.username != '') {
-      Firebase.addUser(this.state.username)
-      CurrentUser.set(this.state.username)
-      this.props.navigation.navigate("MapScreen",{username: this.state.username})
+  async componentDidMount() {
+    let username = await AsyncStorage.getItem('username');
+    if (username == undefined) {
+      this.setState({ loading: false });
     } else {
-      Alert.alert("Warning",
-                  "Username is empty",)
+      CurrentUser.set(username);
+      this.setState({ loading: false });
+      this.props.navigation.navigate('MapScreen');
+    }
+  }
+
+  next = async () => {
+    if (this.state.username != '') {
+      Firebase.addUser(this.state.username);
+      CurrentUser.set(this.state.username);
+      await AsyncStorage.setItem('username', this.state.username);
+      this.setState({ username: null }, () => {
+        this.props.navigation.navigate('MapScreen');
+      });
+    } else {
+      Alert.alert("Warning", "Username is empty");
     }
   }
 
   render() {
     return (
-        <SafeAreaView style={styles.container}>
-          
-          <View>
-            <Text style={styles.headerText}>UserName</Text>
-            <TextInput
-                  style={styles.input}
-                  placeholder="Create a name"
-                  onChangeText={username => {
-                    this.setState({username});
-                  }}
-                  maxLength={30}
-                  value={this.state.username}
-            />
-            <View style={styles.next}>
-                  <TouchableOpacity 
-                        style={styles.nextButton}
-                        onPress={this.next}>
-                    <FontAwesome5 name='search' color='#fff' size={30} />
-                  </TouchableOpacity>
-            </View>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <KeyboardAvoidingView style={styles.container} behavior='padding'>
+          <View><Text style={styles.headerText}>What's Your Name?</Text></View>
+          <TextInput
+            style={styles.input}
+            placeholder="Create a name"
+            onChangeText={username => {
+              this.setState({ username });
+            }}
+            maxLength={30}
+            value={this.state.username}
+          />
+          <View style={styles.next}>
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={this.next}>
+              <FontAwesome5 name='arrow-right' color='#fff' size={30} />
+            </TouchableOpacity>
           </View>
-
-        </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
 }
@@ -77,7 +92,7 @@ const styles = StyleSheet.create({
   },
   next: {
     alignItems: 'center',
-    marginTop: 60,
+    marginTop: 50,
   },
   nextButton: {
     width: 70,
