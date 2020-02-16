@@ -9,3 +9,13 @@ export class CurrentUser {
         CurrentUser._currentUser = a;
     }
 }
+
+export function format24HourMin(date) {
+    if (!(date instanceof Date)) {
+        return '––';
+    } else {
+        return pad2(date.getHours()) + ':' + pad2(date.getMinutes());
+    }
+}
+
+function pad2(x) { return x < 10 ? '0' + x : x; }

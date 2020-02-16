@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert } from 'r
 import ActionSheet from 'react-native-custom-actionsheet';
 import DatePicker from '../datePicker';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { CurrentUser } from '../helper';
+import { CurrentUser, format24HourMin } from '../helper';
 import Firebase from '../firebase';
 
 const OPTION_1 = {
@@ -144,7 +144,7 @@ export default class RequestScreen extends React.Component {
             </Text>
 
           <Text style={styles.itemSelectedText}>
-            {this.state.datetime.getHours() + ' : ' + this.state.datetime.getMinutes()}
+            {format24HourMin(this.state.datetime)}
           </Text>
 
           <DatePicker
