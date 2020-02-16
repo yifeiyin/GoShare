@@ -8,17 +8,41 @@ import { CurrentUser } from '../helper'
 export default class AuthScreen extends React.Component {
   
   state = {
-    username: "",
+    username: '',
+    users: [],
+  }
+
+  componentDidMount() {
+    this.firebaseItemsLister = Firebase.onUsersChange((data) => {
+      data = data.val();
+      let users = [];
+      for (let key in data) {
+        let item = data[key];
+        users.push(key);
+      }
+      this.setState({ users });
+    });
+  }
+
+  componentWillUnmount() {
+    Firebase.off(this.firebaseItemsLister);
   }
 
   next = () => {
-    if (this.state.username != '') {
+    if (this.state.username == '') {
+      Alert.alert("Warning",
+                  "Username is empty",)
+    } else if (findUser(this.state.users, this.state.username) == ''){
       Firebase.addUser(this.state.username)
+      Alert.alert("Warning",
+                  "Your account has been created",)
       CurrentUser.set(this.state.username)
       this.props.navigation.navigate("MapScreen",{username: this.state.username})
     } else {
       Alert.alert("Warning",
-                  "Username is empty",)
+                  "Sign in as " + this.state.username,)
+      CurrentUser.set(this.state.username)
+      this.props.navigation.navigate("MapScreen",{username: this.state.username})
     }
   }
 
@@ -50,6 +74,15 @@ export default class AuthScreen extends React.Component {
     );
   }
 }
+
+function findUser(users, username) {
+  for (let item of users) {
+    if (item == username) {
+      return item
+    }
+  }
+  return ''
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -18,7 +18,7 @@ export default class MapScreen extends React.Component {
   componentDidMount() {
     this.firebaseItemsLister = Firebase.onItemsChange((data) => {
       data = data.val();
-      console.log(data);
+      // console.log(data);
       let markers = [];
       for (let key in data) {
         let item = data[key];
