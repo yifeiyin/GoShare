@@ -89,17 +89,17 @@ export default class MapScreen extends React.Component {
       <View style={{ flex: 1 }}>
         <View style={styles.signOutButton}>
           <TouchableOpacity onPress={() => { AsyncStorage.removeItem('username'); this.props.navigation.goBack() }}>
-            <FontAwesome5 name='sign-out-alt' size={25} />
+            <FontAwesome5 name='sign-out-alt' color='#514E5A' size={25} />
           </TouchableOpacity>
         </View>
         <View style={styles.messagesButton}>
           <TouchableOpacity onPress={() => { this.props.navigation.navigate('ChatListScreen'); }}>
-            <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>Messages</Text>
+            <Text style={{ color: '#D81B60', fontWeight: '800', fontSize: 16 }}>Messages</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.requestButton}>
           <TouchableOpacity onPress={() => { this.props.navigation.navigate('RequestScreen'); }}>
-            <Text style={{ color: 'white', fontWeight: '600', fontSize: 16 }}>Request</Text>
+            <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>Request</Text>
           </TouchableOpacity>
         </View>
         <MapView
@@ -158,8 +158,8 @@ const COMMON_STYLES = {
   shadowOpacity: 0.1,
 };
 
-const height = 60;
-const width = 130;
+const height = 50;
+const width = 110;
 
 const styles = StyleSheet.create({
   signOutButton: {
@@ -181,17 +181,19 @@ const styles = StyleSheet.create({
     ...COMMON_STYLES,
     right: 15,
     bottom: 30,
-    backgroundColor: '#47BB17',
+    backgroundColor: '#eee',
     color: 'white',
     height: height,
     width: width,
     borderRadius: height / 2,
+    borderWidth: 3,
+    borderColor: '#D81B60'
   },
   requestButton: {
     ...COMMON_STYLES,
     right: 15,
     bottom: height * 1.2 + 30,
-    backgroundColor: '#47BB17',
+    backgroundColor: '#D81B60',
     color: 'white',
     height: height,
     width: width,

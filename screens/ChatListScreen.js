@@ -9,37 +9,25 @@ export default class ChatListScreen extends React.Component {
   }
 
   state = {
-    users: [],
     chats: []
   };
 
   startChat = (item) => {
-    this.props.navigation.navigate("ChatScreen", { to: item });
+    this.props.navigation.navigate("ChatScreen", { to: item.to });
   }
 
   componentDidMount() {
     this.firebaseItemsLister = Firebase.onMessagesChange((data) => {
       data = data.val();
       let chats = []
-      for (let key in data) {
-        let item = data[key];
-        if ((item.to == CurrentUser.get()) && (!chats.includes(item.user.name)) && (item.user.name != CurrentUser.get())) {
-          chats.push(item.user.name)
-        } else if ((item.user.name == CurrentUser.get()) && (!chats.includes(item.to)) && (item.to != CurrentUser.get())) {
-          chats.push(item.to)
+      Object.values(data).sort((a, b) => a.timestamp - b.timestamp).forEach(item => {
+        if ((item.to == CurrentUser.get()) && (check(chats, item.user.name)) && (item.user.name != CurrentUser.get())) {
+          chats.push({ to: item.user.name, message: item.text });
+        } else if ((item.user.name == CurrentUser.get()) && (check(chats, item.to)) && (item.to != CurrentUser.get())) {
+          chats.push({ to: item.to, message: item.text })
         }
-      }
+      });
       this.setState({ chats: chats });
-    });
-
-    this.firebaseItemsLister = Firebase.onUsersChange((data) => {
-      data = data.val();
-      let users = [];
-      for (let key in data) {
-        let item = data[key];
-        users.push({ username: key, chats: item.chat });
-      }
-      this.setState({ users });
     });
   }
 
@@ -50,23 +38,19 @@ export default class ChatListScreen extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-
-        {/* <View style={styles.chatView}>
-          <Text style={styles.chatText}>
-            Chats
-          </Text>
-        </View> */}
-
         <View style={styles.listView}>
           <FlatList
-            keyExtractor={(item) => item}
+            keyExtractor={(item) => item.to}
             style={styles.list}
             data={this.state.chats}
             renderItem={({ item }) =>
               <TouchableOpacity style={styles.conversation}
                 onPress={() => this.startChat(item)}>
                 <Text style={styles.conversationText}>
-                  {item}
+                  {item.to}
+                </Text>
+                <Text style={styles.messageText} numberOfLines={1} ellipsizeMode='tail'>
+                  {item.message}
                 </Text>
               </TouchableOpacity>
             }
@@ -77,11 +61,14 @@ export default class ChatListScreen extends React.Component {
   }
 }
 
-// function findChats(chats) {
-//   let out = chat.split(',')
-//   console.log(out)
-//   return out.filter(v => v !== '');
-// };
+function check(chats, name) {
+  for (let chat of chats) {
+    if (chat.to == name) {
+      return false
+    }
+  }
+  return true
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -102,17 +89,24 @@ const styles = StyleSheet.create({
   listView: {
     flex: 11
   },
+  list: {
+
+  },
   conversation: {
-    height: 50,
-    width: 370,
     backgroundColor: "#eee",
-    marginTop: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   conversationText: {
     fontSize: 20,
     fontWeight: '800',
     color: '#514E5A',
   },
+  messageText: {
+    marginTop: 10,
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#514E5A',
+  }
 });

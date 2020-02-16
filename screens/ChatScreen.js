@@ -3,7 +3,6 @@ import { Platform, KeyboardAvoidingView, SafeAreaView, View, Text } from 'react-
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../firebase';
 import { CurrentUser } from '../helper';
-import { NavigationContext } from 'react-navigation';
 
 export default class ChatScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -17,7 +16,7 @@ export default class ChatScreen extends React.Component {
   get user() {
     return {
       _id: CurrentUser.get(),
-      name: CurrentUser.get()
+      name: CurrentUser.get(),
     }
   }
 
