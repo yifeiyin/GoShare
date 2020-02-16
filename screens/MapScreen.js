@@ -33,7 +33,6 @@ export default class MapScreen extends React.Component {
       this.currentItemsHolding = Object.entries(data).filter(([itemName, item]) => item.username == CurrentUser.get()).map(([itemName, item]) => itemName);
     });
 
-
     this.recordLocationTimeOut = this.startRecordingLocation();
   }
 

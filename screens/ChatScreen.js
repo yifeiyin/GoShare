@@ -57,7 +57,7 @@ export default class ChatScreen extends React.Component {
         let item = data[key];
         if (item.to == this.props.navigation.getParam('to') && item.user.name == CurrentUser.get()
           || item.to == CurrentUser.get() && item.user.name == this.props.navigation.getParam('to')) {
-          messages.unshift({ key, to: item.to, text: item.text, timestamp: item.timestamp, user: item.user });
+          messages.unshift({ _id: key, to: item.to, text: item.text, timestamp: item.timestamp, user: item.user });
         }
       }
       this.setState({ messages });

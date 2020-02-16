@@ -6,7 +6,7 @@ import { confirm, CurrentUser } from '../helper';
 
 export default class TransferScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
-    headerTitle: navigation.getParam('toUsername', 'Transfer'),
+    headerTitle: navigation.getParam('toUsername', 'Transfer') + '\'s items',
   });
 
   state = {
@@ -30,7 +30,7 @@ export default class TransferScreen extends React.Component {
   }
 
   handleTransfer = (item) => {
-    confirm('Transfer ' + item + ' to ' + this.toUsername + '?', 'You will be responsible for this item.', 'Yes').then(confirmed => {
+    confirm('Transfer ' + item + ' from ' + this.toUsername + '?', 'You will be responsible for this item.', 'Yes').then(confirmed => {
       if (confirmed) {
         Firebase.updateItemOwnership(item, CurrentUser.get());
         this.props.navigation.goBack();
@@ -44,6 +44,7 @@ export default class TransferScreen extends React.Component {
         <FlatList
           data={this.state.items}
           keyExtractor={(item) => item}
+          ListEmptyComponent={() => <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 40 }}><Text style={{ color: '#514E5A', fontWeight: '600', fontSize: 18 }}>No items.</Text></View>}
           renderItem={({ item }) => <TransferItem item={item} handleTransfer={this.handleTransfer} />}
           ItemSeparatorComponent={() => <View style={{ height: 1, width: '100%', backgroundColor: '#ccc' }} />}
         />
