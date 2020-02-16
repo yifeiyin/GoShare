@@ -39,6 +39,12 @@ class Firebase {
         });
     }
 
+    updateMessageFlag(itemId, f) {
+        firebase.database().ref('messages/' + itemId).update({
+            flag: f,
+        });
+    }
+
     addUser(name) {
         firebase.database().ref('users/' + name).set({ exist: 'exist' });
     }
@@ -61,10 +67,11 @@ class Firebase {
 
     send = (messages, to) => {
         messages.forEach(item => {
-            const message = {
+            message = {
                 to: to,
                 text: item.text,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
+                flag: 'unread',
                 user: item.user
             };
 
@@ -76,11 +83,13 @@ class Firebase {
         const { user, text, timestamp } = message.val();
         const { key: _id } = message;
         const createdAt = new Date(timestamp);
+        flag = 'unread';
 
         return {
             _id,
             createdAt,
             text,
+            flag,
             user
         };
     };

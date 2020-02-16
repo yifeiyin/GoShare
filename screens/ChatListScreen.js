@@ -2,6 +2,14 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, FlatList } from 'react-native';
 import Firebase from '../firebase';
 import { CurrentUser } from '../helper';
+import { NavigationEvents } from 'react-navigation';
+
+// class MessageStorage {
+//   chats = [];
+//   indicator = [];
+// }
+
+// const MS = new MessageStorage();
 
 export default class ChatListScreen extends React.Component {
   static navigationOptions = {
@@ -9,10 +17,14 @@ export default class ChatListScreen extends React.Component {
   }
 
   state = {
-    chats: []
+    chats: [],
   };
 
   startChat = (item) => {
+    // MS.chats = this.state.chats;
+    // MS.indicator[item.to] = false;
+    // console.log(MS.indicator)
+    // Firebase.updateMessageFlag(item.key, 'read')
     this.props.navigation.navigate("ChatScreen", { to: item.to });
   }
 
@@ -22,12 +34,15 @@ export default class ChatListScreen extends React.Component {
       let chats = []
       Object.values(data).sort((a, b) => b.timestamp - a.timestamp).forEach(item => {
         if ((item.to == CurrentUser.get()) && (check(chats, item.user.name)) && (item.user.name != CurrentUser.get())) {
-          chats.push({ to: item.user.name, message: item.text });
+          chats.push({ to: item.user.name, message: item.text, flag: item.flag, key: item.key });
         } else if ((item.user.name == CurrentUser.get()) && (check(chats, item.to)) && (item.to != CurrentUser.get())) {
-          chats.push({ to: item.to, message: item.text })
+          chats.push({ to: item.to, message: item.text, flag: item.flag, key: item.key })
         }
       });
-      this.setState({ chats: chats });
+      this.setState({ chats });
+      // console.log(chats)
+      // MS.indicator = compare(MS.chats, this.state.chats);
+      // console.log(MS.indicator);
     });
   }
 
@@ -38,6 +53,13 @@ export default class ChatListScreen extends React.Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
+        {/* <NavigationEvents
+          onWillFocus={() => {
+            this.forceUpdate();
+            MS.indicator = compare(MS.chats, this.state.chats);
+            // this.forceUpdate();
+          }}
+        /> */}
         <View style={styles.listView}>
           <FlatList
             keyExtractor={(item) => item.to}
@@ -47,9 +69,17 @@ export default class ChatListScreen extends React.Component {
               <TouchableOpacity style={styles.conversation}
                 onPress={() => this.startChat(item)}>
                 <Text style={styles.conversationText}>
+                  {/* style={item.flag == 'unread'
+                    ? styles.conversationTextUnread
+                    : styles.conversationText} */}
                   {item.to}
                 </Text>
-                <Text style={styles.messageText} numberOfLines={1} ellipsizeMode='tail'>
+                <Text style={styles.messageText}
+                  // style={item.flag.startWith('unread')
+                  //   ? styles.messageTextUnread
+                  //   : styles.messageText}
+                  umberOfLines={1}
+                  ellipsizeMode='tail'>
                   {item.message}
                 </Text>
               </TouchableOpacity>
@@ -70,9 +100,20 @@ function check(chats, name) {
   return true
 }
 
-function compare(previous, current) {
-
-}
+// function compare(previous, current) {
+//   console.log(previous)
+//   console.log(current)
+//   let indicator = {}
+//   for (let each of current) {
+//     for (let element of previous) {
+//       if (each.to == element.to && each.message == element.message) {
+//         indicator[each.to] = false;
+//       }
+//     }
+//     indicator[each.to] = true;
+//   }
+//   return indicator
+// }
 
 const styles = StyleSheet.create({
   container: {
@@ -80,10 +121,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center'
   },
   chatView: {
-    flex: 1
+    flex: 1,
   },
   chatText: {
     fontSize: 30,
@@ -91,10 +131,7 @@ const styles = StyleSheet.create({
     color: '#514E5A',
   },
   listView: {
-    flex: 11
-  },
-  list: {
-
+    width: '100%'
   },
   conversation: {
     backgroundColor: "#eee",
@@ -107,10 +144,21 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#514E5A',
   },
+  conversationTextUnread: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#D81B60',
+  },
   messageText: {
     marginTop: 10,
     fontSize: 15,
     fontWeight: '400',
     color: '#514E5A',
+  },
+  messageTextUnread: {
+    marginTop: 10,
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#D81B60',
   }
 });
