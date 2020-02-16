@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, Alert } from 'r
 import { TextInput } from 'react-native-gesture-handler';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Firebase from '../firebase'
+import { CurrentUser } from '../helper'
 
 export default class AuthScreen extends React.Component {
   
@@ -13,6 +14,7 @@ export default class AuthScreen extends React.Component {
   next = () => {
     if (this.state.username != '') {
       Firebase.addUser(this.state.username)
+      CurrentUser.set(this.state.username)
       this.props.navigation.navigate("MapScreen",{username: this.state.username})
     } else {
       Alert.alert("Warning",
