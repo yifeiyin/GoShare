@@ -93,6 +93,11 @@ export default class MapScreen extends React.Component {
             <FontAwesome5 name='sign-out-alt' color='#514E5A' size={25} />
           </TouchableOpacity>
         </View>
+        <View style={styles.myItemsButton}>
+          <TouchableOpacity onPress={() => { this.props.navigation.navigate('TransferScreen', { toUsername: CurrentUser.get() }); }}>
+            <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>My Items</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.messagesButton}>
           <TouchableOpacity onPress={() => { this.props.navigation.navigate('ChatListScreen'); }}>
             <Text style={{ color: '#D81B60', fontWeight: '800', fontSize: 16 }}>Messages</Text>
@@ -194,6 +199,16 @@ const styles = StyleSheet.create({
     ...COMMON_STYLES,
     right: 15,
     bottom: height * 1.2 + 30,
+    backgroundColor: '#D81B60',
+    color: 'white',
+    height: height,
+    width: width,
+    borderRadius: height / 2,
+  },
+  myItemsButton: {
+    ...COMMON_STYLES,
+    right: 15,
+    top: 50,
     backgroundColor: '#D81B60',
     color: 'white',
     height: height,

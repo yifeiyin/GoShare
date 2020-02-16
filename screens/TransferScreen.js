@@ -33,6 +33,7 @@ export default class TransferScreen extends React.Component {
     confirm('Transfer ' + item + ' from ' + this.toUsername + '?', 'You will be responsible for this item.', 'Yes').then(confirmed => {
       if (confirmed) {
         Firebase.updateItemOwnership(item, CurrentUser.get());
+        Firebase.send([{ text: 'I have received ' + item + ' from you.' }], this.toUsername);
         this.props.navigation.goBack();
       }
     });
@@ -44,8 +45,8 @@ export default class TransferScreen extends React.Component {
         <FlatList
           data={this.state.items}
           keyExtractor={(item) => item}
-          ListEmptyComponent={() => <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 40 }}><Text style={{ color: '#514E5A', fontWeight: '600', fontSize: 18 }}>No items.</Text></View>}
-          renderItem={({ item }) => <TransferItem item={item} handleTransfer={this.handleTransfer} />}
+          ListEmptyComponent={() => <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 40 }}><Text style={{ color: '#514E5A', fontWeight: '600', fontSize: 18 }}>{this.toUsername + ' has no items.'}</Text></View>}
+          renderItem={({ item }) => <TransferItem toUsername={this.toUsername} item={item} handleTransfer={this.handleTransfer} />}
           ItemSeparatorComponent={() => <View style={{ height: 1, width: '100%', backgroundColor: '#ccc' }} />}
         />
       </SafeAreaView>
@@ -55,6 +56,7 @@ export default class TransferScreen extends React.Component {
 
 function TransferItem(props) {
   const { item } = props;
+  const isSameUser = props.toUsername == CurrentUser.get();
   return (
     <View
       style={{
@@ -65,8 +67,10 @@ function TransferItem(props) {
       }}
     >
       <Text style={{ fontSize: 18, flex: 1 }}>{item}</Text>
-      <TouchableOpacity onPress={() => props.handleTransfer(item)}>
-        <FontAwesome5 name='exchange-alt' size={20} color='blue' style={{ paddingVertical: 20 }} />
+      <TouchableOpacity disabled={isSameUser} onPress={() => props.handleTransfer(item)}>
+        {
+          <FontAwesome5 name='exchange-alt' size={20} color={isSameUser ? 'white' : 'blue'} style={{ paddingVertical: 20 }} />
+        }
       </TouchableOpacity>
     </View>
   );
