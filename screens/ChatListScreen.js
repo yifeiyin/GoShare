@@ -5,16 +5,30 @@ import { CurrentUser } from '../helper';
 
 export default class ChatListScreen extends React.Component {
 
+  chat = '';
+
   state = {
     users: [],
     chats: []
   };
 
-  chat = (item) => {
+  startChat = (item) => {
     this.props.navigation.navigate("ChatScreen", { to: item });
   }
 
   componentDidMount() {
+    this.firebaseItemsLister = Firebase.onMessagesChange((data) => {
+      data = data.val();
+      let chat = '';
+      for (let key in data) {
+        let item = data[key];
+        if (item.to == CurrentUser.get() && (!chat.includes(item.user.name)) && item.user.name != CurrentUser.get()) {
+          chat = (chat || '') + item.user.name
+        }
+      }
+      this.chat = chat;
+    });
+
     this.firebaseItemsLister = Firebase.onUsersChange((data) => {
       data = data.val();
       let users = [];
@@ -30,7 +44,6 @@ export default class ChatListScreen extends React.Component {
     Firebase.off(this.firebaseItemsLister);
   }
 
-
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -38,17 +51,17 @@ export default class ChatListScreen extends React.Component {
         <View style={styles.chatView}>
           <Text style={styles.chatText}>
             Chats
-            </Text>
+          </Text>
         </View>
 
         <View style={styles.listView}>
           <FlatList
             keyExtractor={(item) => item}
             style={styles.list}
-            data={findChats(this.state.users)}
+            data={findChats(this.chat, this.state.users)}
             renderItem={({ item }) =>
               <TouchableOpacity style={styles.conversation}
-                onPress={() => this.chat(item)}>
+                onPress={() => this.startChat(item)}>
                 <Text style={styles.conversationText}>
                   {item}
                 </Text>
@@ -61,14 +74,16 @@ export default class ChatListScreen extends React.Component {
   }
 }
 
-function findChats(users) {
+function findChats(chat, users) {
   for (let item of users) {
     if (item.username == CurrentUser.get()) {
-      let out = item.chats.split(',')
-      return out.filter(v => v !== '');
+      item.chat = chat
     }
   }
-  return []
+  console.log(chat)
+  let out = chat.split(',')
+  console.log(out)
+  return out.filter(v => v !== '');
 };
 
 const styles = StyleSheet.create({
