@@ -74,6 +74,7 @@ export default class RequestScreen extends React.Component {
             + ' at ' + format24HourMin(this.state.dateTime)
             + '. Should we meet at ' + this.state.selectedPlace + ' ?',
           createdAt: new Date(),
+          flag: 'unread',
           user: {
             _id: CurrentUser.get(),
             name: CurrentUser.get(),
