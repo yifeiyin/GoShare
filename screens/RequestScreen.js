@@ -24,40 +24,13 @@ export default class RequestScreen extends React.Component {
   });
 
   holders = []
-  chats = ''
+  // chats = ''
 
   state = {
     selectedItem: 'Please Select',
     selectedPlace: 'Please Select',
-    datetime: new Date(),
+    dateTime: new Date(),
     actionSheetOptions: OPTION_1,
-  }
-
-  send = () => {
-    let message = [
-      {
-        _id: 1,
-        text: 'I would like to request for a ' + this.state.selectedItem
-          + ' at ' + this.state.datetime.toLocaleTimeString() + '. Should we meet at ' + this.state.selectedPlace + ' ?',
-        createdAt: new Date(),
-        user: {
-          _id: CurrentUser.get(),
-          name: CurrentUser.get(),
-        }
-      }
-    ]
-
-    for (let item of this.holders) {
-      if (item.item.startsWith(this.state.selectedItem)) {
-        if (item.username != CurrentUser.get()) {
-          Firebase.send(message, item.username)
-        }
-      }
-    }
-
-    Alert.alert("Warning",
-      "Your request has been sent")
-    this.props.navigation.navigate("MapScreen")
   }
 
   componentDidMount() {
@@ -71,25 +44,59 @@ export default class RequestScreen extends React.Component {
       this.holders = holders;
     });
 
-    this.firebaseItemsLister = Firebase.onUsersChange((data) => {
-      data = data.val();
-      console.log(data)
-      let chats = '';
-      for (let key in data) {
-        if (key == CurrentUser.get()) {
-          let item = data[key];
-          chats = item.chat;
-        }
-      }
-      console.log(chats)
-      this.chats = chats;
-    });
+    // this.firebaseItemsLister = Firebase.onUsersChange((data) => {
+    //   data = data.val();
+    //   console.log(data)
+    //   let chats = '';
+    //   for (let key in data) {
+    //     if (key == CurrentUser.get()) {
+    //       let item = data[key];
+    //       chats = item.chat;
+    //     }
+    //   }
+    //   console.log(chats)
+    //   this.chats = chats;
+    // });
   }
 
   componentWillUnmount() {
     Firebase.off(this.firebaseItemsLister);
   }
 
+  send = () => {
+    if (this.state.selectedItem == 'Please Select'
+      || this.state.selectedPlace == 'Please Select'
+      || this.state.dateTime == new Date()) {
+      Alert.alert('Warning', 'Something is empty')
+    } else {
+      let message = [
+        {
+          _id: 1,
+          text: 'I would like to request for a ' + this.state.selectedItem
+            + ' at ' + this.state.dateTime.getHours() + ' : '
+            + this.state.dateTime.getMinutes()
+            + '. Should we meet at ' + this.state.selectedPlace + ' ?',
+          createdAt: new Date(),
+          user: {
+            _id: CurrentUser.get(),
+            name: CurrentUser.get(),
+          }
+        }
+      ]
+
+      for (let item of this.holders) {
+        if (item.item.startsWith(this.state.selectedItem)) {
+          if (item.username != CurrentUser.get()) {
+            Firebase.send(message, item.username)
+          }
+        }
+      }
+
+      Alert.alert("Success",
+        "Your request has been sent")
+      this.props.navigation.navigate("MapScreen")
+    }
+  }
 
   showActionSheet = (option) => {
     this.setState({ actionSheetOptions: option == 'OPTION_1' ? OPTION_1 : OPTION_2 }, () => {
@@ -140,7 +147,7 @@ export default class RequestScreen extends React.Component {
 
         <View style={styles.whenView}>
           <Text style={styles.itemText}>
-            I need it today at ...
+            I need it today at
             </Text>
 
           <Text style={styles.itemSelectedText}>
@@ -149,7 +156,7 @@ export default class RequestScreen extends React.Component {
 
           <DatePicker
             date={new Date()}
-            onChange={(newValue) => this.setState({ datetime: newValue })} />
+            onChange={(newValue) => this.setState({ dateTime: newValue })} />
         </View>
 
         <View style={styles.whereView}>
