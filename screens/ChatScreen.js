@@ -43,6 +43,8 @@ export default class ChatScreen extends React.Component {
 
     this.firebaseItemsLister = Firebase.onMessagesChange((data) => {
       data = data.val();
+      console.log('Rec msg updates');
+      console.log(data);
       let messages = [];
       for (let key in data) {
         let item = data[key];

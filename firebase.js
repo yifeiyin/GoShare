@@ -33,21 +33,8 @@ class Firebase {
         });
     }
 
-    updateChats(username, newchat, chats) {
-        if (chats.includes(newchat) || newchat == username) {
-            chats = chats
-        } else {
-            chats = chats + ',' + newchat
-        }
-
-        firebase.database().ref('users/' + username).set({
-            chat: chats
-        });
-    }
-
     addUser(name) {
         firebase.database().ref('users/' + name).set({
-            chat: '',
         });
     }
 

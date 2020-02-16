@@ -8,8 +8,6 @@ export default class ChatListScreen extends React.Component {
     headerTitle: 'Messages'
   }
 
-  chat = '';
-
   state = {
     users: [],
     chats: []
@@ -22,14 +20,16 @@ export default class ChatListScreen extends React.Component {
   componentDidMount() {
     this.firebaseItemsLister = Firebase.onMessagesChange((data) => {
       data = data.val();
-      let chat = '';
+      let chats = []
       for (let key in data) {
         let item = data[key];
-        if (item.to == CurrentUser.get() && (!chat.includes(item.user.name)) && item.user.name != CurrentUser.get()) {
-          chat = (chat || '') + item.user.name
+        if ((item.to == CurrentUser.get()) && (!chats.includes(item.user.name)) && (item.user.name != CurrentUser.get())) {
+          chats.push(item.user.name)
+        } else if ((item.user.name == CurrentUser.get()) && (!chats.includes(item.to)) && (item.to != CurrentUser.get())) {
+          chats.push(item.to)
         }
       }
-      this.chat = chat;
+      this.setState({ chats: chats });
     });
 
     this.firebaseItemsLister = Firebase.onUsersChange((data) => {
@@ -61,7 +61,7 @@ export default class ChatListScreen extends React.Component {
           <FlatList
             keyExtractor={(item) => item}
             style={styles.list}
-            data={findChats(this.chat, this.state.users)}
+            data={this.state.chats}
             renderItem={({ item }) =>
               <TouchableOpacity style={styles.conversation}
                 onPress={() => this.startChat(item)}>
@@ -77,17 +77,11 @@ export default class ChatListScreen extends React.Component {
   }
 }
 
-function findChats(chat, users) {
-  for (let item of users) {
-    if (item.username == CurrentUser.get()) {
-      item.chat = chat
-    }
-  }
-  console.log(chat)
-  let out = chat.split(',')
-  console.log(out)
-  return out.filter(v => v !== '');
-};
+// function findChats(chats) {
+//   let out = chat.split(',')
+//   console.log(out)
+//   return out.filter(v => v !== '');
+// };
 
 const styles = StyleSheet.create({
   container: {

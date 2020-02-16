@@ -51,7 +51,6 @@ export default class RequestScreen extends React.Component {
       if (item.item.startsWith(this.state.selectedItem)) {
         if (item.username != CurrentUser.get()) {
           Firebase.send(message, item.username)
-          Firebase.updateChats(CurrentUser.get(), item.username, this.chats)
         }
       }
     }
