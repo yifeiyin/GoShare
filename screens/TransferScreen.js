@@ -33,7 +33,7 @@ export default class TransferScreen extends React.Component {
     confirm('Transfer ' + item + ' from ' + this.toUsername + '?', 'You will be responsible for this item.', 'Yes').then(confirmed => {
       if (confirmed) {
         Firebase.updateItemOwnership(item, CurrentUser.get());
-        Firebase.send([{ text: 'I have received ' + item + ' from you.' }], this.toUsername);
+        Firebase.send([{ text: 'I have received ' + item + ' from you.', user: { _id: CurrentUser.get(), name: CurrentUser.get() } }], this.toUsername);
         this.props.navigation.goBack();
       }
     });
