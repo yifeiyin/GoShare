@@ -38,7 +38,7 @@ export default class RequestScreen extends React.Component {
       {
         _id: 1,
         text: 'I would like to request for a ' + this.state.selectedItem
-          + ' at ' + this.state.datetime.toString() + '. Should we meet at ' + this.state.selectedPlace + ' ?',
+          + ' at ' + this.state.datetime.toLocaleTimeString() + '. Should we meet at ' + this.state.selectedPlace + ' ?',
         createdAt: new Date(),
         user: {
           _id: CurrentUser.get(),
