@@ -31,8 +31,9 @@ export default class AuthScreen extends React.Component {
       this.setState({ loading: false });
     } else {
       CurrentUser.set(username);
-      this.setState({ loading: false });
-      this.props.navigation.navigate('MapScreen');
+      this.setState({ loading: false }, () => {
+        this.props.navigation.navigate('MapScreen');
+      });
     }
   }
 
@@ -41,7 +42,7 @@ export default class AuthScreen extends React.Component {
   }
 
   next = async () => {
-    let username = this.state.username.trim();
+    let username = (this.state.username || '').trim();
     if (username != '') {
       Firebase.addUser(username);
       CurrentUser.set(username);

@@ -34,8 +34,7 @@ class Firebase {
     }
 
     addUser(name) {
-        firebase.database().ref('users/' + name).set({
-        });
+        firebase.database().ref('users/' + name).set({ exist: 'exist' });
     }
 
     onUsersChange(callback) {

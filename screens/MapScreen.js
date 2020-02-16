@@ -41,8 +41,8 @@ export default class MapScreen extends React.Component {
   }
 
   currentItemsHolding = [
-    'Calculator_1',
-    // 'Power-bank_2'
+    // 'Calculator_1',
+    // 'USB-C_1'
   ];
 
   startRecordingLocation = () => {
