@@ -26,6 +26,7 @@ class Firebase {
     }
 
     updateItem(itemId, coords, username) {
+        console.log(`Updating item ${itemId} by ${username}`);
         firebase.database().ref('items/' + itemId).set({
           coords: coords,
           username: username,

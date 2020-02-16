@@ -22,26 +22,38 @@ export default class MapScreen extends React.Component {
       let markers = [];
       for (let key in data) {
         let item = data[key];
-        markers.push({ coords: item.coords, title: item.username, description: key });
+        markers.push({ coords: item.coords, title: key, description: item.username });
       }
       this.setState({ markers });
     });
+
+    this.recordLocationTimeOut = this.startRecordingLocation();
   }
 
   componentWillUnmount() {
     Firebase.off(this.firebaseItemsLister);
+    clearInterval(this.recordLocationTimeOut);
   }
 
   currentItemsHolding = [
-    'Lightning_10'
+    'Lightning_11',
+    'Power-bank_2'
   ];
 
-  startRecordingLocation = async () => {
-    const location = await this.getUserLocation();
-
-    this.currentItemsHolding.forEach(item => {
-      Firebase.updateItem(item, location.coords, CurrentUser.get() || 'Test User');
-    });
+  startRecordingLocation = () => {
+    let a = () => {
+      this.getUserLocation().then(location => {
+        this.currentItemsHolding.forEach(item => {
+          Firebase.updateItem(item, location.coords, CurrentUser.get() || 'Test User');
+        });
+      }).catch(error => {
+        console.warn(error);
+      })
+    }
+    a();
+    return setInterval(() => {
+      a();
+    }, 5000);
   };
 
   getUserLocation = async () => {
@@ -71,24 +83,28 @@ export default class MapScreen extends React.Component {
     return (
       <View>
         <MapView
-        showsUserLocation={true}
-        style={{ width: '100%', height: '100%', backgroundColor: '#ddd' }}
+          showsUserLocation={true}
+          style={{ width: '100%', height: '100%', backgroundColor: '#ddd' }}
           initialRegion={{
             latitude: 43.785,
             longitude: -79.188,
             latitudeDelta: 0.005,
             longitudeDelta: 0.015,
-          }}>
+          }}
+        >
           {
-            this.state.markers.map(marker => (
+            this.state.markers.map(marker =>
               <Marker
                 key={marker.title}
                 coordinate={marker.coords}
                 title={marker.title}
                 description={marker.description}
                 pinColor={marker.color}
+                image={imageByName(marker.title)}
+                zIndex={-1}
+                opacity={0.8}
               />
-            ))
+            )
           }
         </MapView>
       </View>
@@ -102,4 +118,11 @@ function locationToMarker(location, color) {
     title: 'Your Location',
     color: color || 'red',
   };
+}
+
+function imageByName(name) {
+  if (name.toLowerCase().startsWith('lightning')) { return require('../assets/lightning.png'); }
+  if (name.toLowerCase().startsWith('usb')) { return require('../assets/usb.png'); }
+  if (name.toLowerCase().startsWith('calculator')) { return require('../assets/calculator.png'); }
+  if (name.toLowerCase().startsWith('power')) { return require('../assets/power.png'); }
 }
