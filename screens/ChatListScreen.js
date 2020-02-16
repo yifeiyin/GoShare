@@ -4,6 +4,9 @@ import Firebase from '../firebase';
 import { CurrentUser } from '../helper';
 
 export default class ChatListScreen extends React.Component {
+  static navigationOptions = {
+    headerTitle: 'Messages'
+  }
 
   state = {
     users: [],
@@ -35,11 +38,11 @@ export default class ChatListScreen extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
 
-        <View style={styles.chatView}>
+        {/* <View style={styles.chatView}>
           <Text style={styles.chatText}>
             Chats
             </Text>
-        </View>
+        </View> */}
 
         <View style={styles.listView}>
           <FlatList

@@ -19,6 +19,10 @@ const OPTION_2 = {
 }
 
 export default class RequestScreen extends React.Component {
+  static navigationOptions = {
+    headerTitle: 'Request',
+  };
+
   holders = []
   chats = ''
 
