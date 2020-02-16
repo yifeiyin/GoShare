@@ -11,11 +11,21 @@ export default class AuthScreen extends React.Component {
   };
 
   state = {
-    username: "",
+    username: '',
+    users: [],
     loading: true,
   }
 
   async componentDidMount() {
+    // this.firebaseItemsLister = Firebase.onUsersChange((data) => {
+    //   data = data.val();
+    //   let users = [];
+    //   for (let key in data) {
+    //     users.push(key);
+    //   }
+    //   this.setState({ users });
+    // });
+
     let username = await AsyncStorage.getItem('username');
     if (username == undefined) {
       this.setState({ loading: false });
@@ -26,18 +36,39 @@ export default class AuthScreen extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    Firebase.off(this.firebaseItemsLister);
+  }
+
   next = async () => {
-    if (this.state.username != '') {
-      Firebase.addUser(this.state.username);
-      CurrentUser.set(this.state.username);
-      await AsyncStorage.setItem('username', this.state.username);
+    let username = this.state.username.trim();
+    if (username != '') {
+      Firebase.addUser(username);
+      CurrentUser.set(username);
+      await AsyncStorage.setItem('username', username);
       this.setState({ username: null }, () => {
         this.props.navigation.navigate('MapScreen');
       });
     } else {
-      Alert.alert("Warning", "Username is empty");
+      Alert.alert("Error", "Username cannot empty");
     }
   }
+
+  // next = () => {
+  //   if (this.state.username == '') {
+  //     Alert.alert("Warning", "Username is empty",)
+  //   } else if (findUser(this.state.users, this.state.username) == ''){
+  //     Firebase.addUser(this.state.username)
+  //     Alert.alert("Warning", "Your account has been created",)
+  //     CurrentUser.set(this.state.username)
+  //     this.props.navigation.navigate("MapScreen",{username: this.state.username})
+  //   } else {
+  //     Alert.alert("Warning",
+  //                 "Sign in as " + this.state.username,)
+  //     CurrentUser.set(this.state.username)
+  //     this.props.navigation.navigate("MapScreen",{username: this.state.username})
+  //   }
+  // }
 
   render() {
     return (
@@ -65,6 +96,15 @@ export default class AuthScreen extends React.Component {
     );
   }
 }
+
+function findUser(users, username) {
+  for (let item of users) {
+    if (item == username) {
+      return item
+    }
+  }
+  return ''
+};
 
 const styles = StyleSheet.create({
   container: {

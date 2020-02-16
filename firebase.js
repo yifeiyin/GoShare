@@ -1,7 +1,7 @@
 import firebase from 'firebase'
 
 class Firebase {
-    constructor(){
+    constructor() {
         this.init()
         this.checkAuth()
     }
@@ -17,7 +17,7 @@ class Firebase {
                 messagingSenderId: "90573831945",
                 appId: "1:90573831945:web:4e22175ad0e95535831dd8",
                 measurementId: "G-FG3M7RQLCY"
-              })
+            })
         }
     };
 
@@ -26,31 +26,51 @@ class Firebase {
     }
 
     updateItem(itemId, coords, username) {
-        console.log(`Updating item ${itemId} by ${username}`);
+        // console.log(`Updating item ${itemId} by ${username}`);
         firebase.database().ref('items/' + itemId).set({
-          coords: coords,
-          username: username,
+            coords: coords,
+            username: username,
+        });
+    }
+
+    updateChats(username, newchat, chats) {
+        if (chats.includes(newchat) || newchat == username) {
+            chats = chats
+        } else {
+            chats = chats + ',' + newchat
+        }
+
+        firebase.database().ref('users/' + username).set({
+            chat: chats
         });
     }
 
     addUser(name) {
-        firebase.database().ref('users/').push({
-          username: name,
-          chat: '',
+        firebase.database().ref('users/' + name).set({
+            chat: '',
         });
     }
-    
-    checkAuth =()=>{
-        firebase.auth().onAuthStateChanged( user => {
-            if (!user){
+
+    onUsersChange(callback) {
+        firebase.database().ref('users/').on('value', callback);
+    }
+
+    onMessagesChange(callback) {
+        firebase.database().ref('messages/').on('value', callback);
+    }
+
+    checkAuth = () => {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
                 firebase.auth().signInAnonymously();
             }
         });
     };
 
-    send = messages => {
+    send = (messages, to) => {
         messages.forEach(item => {
             const message = {
+                to: to,
                 text: item.text,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
                 user: item.user
@@ -61,12 +81,12 @@ class Firebase {
     };
 
     parse = message => {
-        const{user, text, timestamp} = message.val();
-        const {key: _id} = message;
+        const { user, text, timestamp } = message.val();
+        const { key: _id } = message;
         const createdAt = new Date(timestamp);
 
         return {
-            id,
+            _id,
             createdAt,
             text,
             user
@@ -77,11 +97,11 @@ class Firebase {
         this.db.on('child_added', snapshot => callback(this.parse(snapshot)));
     };
 
-    off(){
+    off() {
         this.db.off()
     }
 
-    get db(){
+    get db() {
         return firebase.database().ref("messages");
     }
 
