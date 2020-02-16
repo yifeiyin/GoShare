@@ -24,7 +24,7 @@ export default class ChatListScreen extends React.Component {
     // MS.chats = this.state.chats;
     // MS.indicator[item.to] = false;
     // console.log(MS.indicator)
-    // Firebase.updateMessageFlag(item.key, 'read')
+    Firebase.updateMessageFlag(item.key, 'read')
     this.props.navigation.navigate("ChatScreen", { to: item.to });
   }
 
@@ -32,15 +32,21 @@ export default class ChatListScreen extends React.Component {
     this.firebaseItemsLister = Firebase.onMessagesChange((data) => {
       data = data.val();
       let chats = []
-      Object.values(data || {}).sort((a, b) => b.timestamp - a.timestamp).forEach(item => {
+      Object.entries(data || {}).sort((a, b) => b[1].timestamp - a[1].timestamp).forEach(([key, item]) => {
         if ((item.to == CurrentUser.get()) && (check(chats, item.user.name)) && (item.user.name != CurrentUser.get())) {
-          chats.push({ to: item.user.name, message: item.text, flag: item.flag, key: item.key });
+          chats.push({ to: item.user.name, message: item.text, flag: item.flag, key: key });
         } else if ((item.user.name == CurrentUser.get()) && (check(chats, item.to)) && (item.to != CurrentUser.get())) {
-          chats.push({ to: item.to, message: item.text, flag: item.flag, key: item.key })
+          chats.push({ to: item.to, message: item.text, flag: item.flag, key: key })
         }
       });
+      // Object.values(data || {}).sort((a, b) => b.timestamp - a.timestamp).forEach(item => {
+      //   if ((item.to == CurrentUser.get()) && (check(chats, item.user.name)) && (item.user.name != CurrentUser.get())) {
+      //     chats.push({ to: item.user.name, message: item.text, flag: item.flag, key: item.id });
+      //   } else if ((item.user.name == CurrentUser.get()) && (check(chats, item.to)) && (item.to != CurrentUser.get())) {
+      //     chats.push({ to: item.to, message: item.text, flag: item.flag, key: item.id })
+      //   }
+      // });
       this.setState({ chats });
-      // console.log(chats)
       // MS.indicator = compare(MS.chats, this.state.chats);
       // console.log(MS.indicator);
     });
@@ -68,16 +74,16 @@ export default class ChatListScreen extends React.Component {
             renderItem={({ item }) =>
               <TouchableOpacity style={styles.conversation}
                 onPress={() => this.startChat(item)}>
-                <Text style={styles.conversationText}>
-                  {/* style={item.flag == 'unread'
+                <Text
+                  style={item.flag == 'unread'
                     ? styles.conversationTextUnread
-                    : styles.conversationText} */}
+                    : styles.conversationText}>
                   {item.to}
                 </Text>
-                <Text style={styles.messageText}
-                  // style={item.flag.startWith('unread')
-                  //   ? styles.messageTextUnread
-                  //   : styles.messageText}
+                <Text
+                  style={item.flag.startsWith('unread')
+                    ? styles.messageTextUnread
+                    : styles.messageText}
                   umberOfLines={1}
                   ellipsizeMode='tail'>
                   {item.message}
