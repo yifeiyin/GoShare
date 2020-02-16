@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { FontAwesome5 } from '@expo/vector-icons';
+import { format24HourMin } from './helper';
 
 export default class DatePicker extends React.Component {
   constructor(props) {
@@ -19,7 +20,7 @@ export default class DatePicker extends React.Component {
       <View style={[styles.container, style]}>
         <TouchableOpacity style={styles.touchableContainer} onPress={() => this.setState({ active: true })}>
           <FontAwesome5 style={styles.dateIcon} name='calendar-day' />
-          <Text style={styles.dateText}>{formatDate(this.state.date)}</Text>
+          <Text style={styles.dateText}>{format24HourMin(this.state.date)}</Text>
         </TouchableOpacity>
         <DateTimePickerModal
           isVisible={this.state.active}
@@ -38,7 +39,7 @@ export default class DatePicker extends React.Component {
 function dateify(date) {
   if (date instanceof Date) {
     return date;
-  } else if (typeof(date) === 'string') {
+  } else if (typeof (date) === 'string') {
     if (date.includes('-')) {
       const split = date.split('-');
       return new Date(split[0], split[1], split[2]);
@@ -62,28 +63,23 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   datePicker: {
-    // flex: 1,
   },
   touchableContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // flex: 1,
-    height: 40,
     borderRadius: 8,
     padding: 8,
-    borderWidth: 2,
-    borderColor: '#514E5A',
     color: '#333',
-    marginTop: 10,
   },
   dateIcon: {
-    color: '#333',
-    fontSize: 20,
-    alignSelf: 'center'
+    color: '#D81B60',
+    fontSize: 23,
+    alignSelf: 'center',
+    marginRight: 10,
   },
   dateText: {
-    flex: 1,
-    textAlign: 'center',
-    color: '#333',
+    fontSize: 25,
+    fontWeight: '800',
+    color: '#D81B60',
   },
 })

@@ -14,6 +14,7 @@ export default class AuthScreen extends React.Component {
     username: '',
     users: [],
     loading: true,
+    focus: false
   }
 
   async componentDidMount() {
@@ -77,11 +78,15 @@ export default class AuthScreen extends React.Component {
         <KeyboardAvoidingView style={styles.container} behavior='padding'>
           <View><Text style={styles.headerText}>What's Your Name?</Text></View>
           <TextInput
-            style={styles.input}
+            style={this.state.focus
+              ? styles.inputFocus
+              : styles.input}
             placeholder="Create a name"
             onChangeText={username => {
               this.setState({ username });
             }}
+            onFocus={() => this.setState({ focus: true })}
+            onBlur={() => this.setState({ focus: false })}
             maxLength={30}
             value={this.state.username}
           />
@@ -131,6 +136,17 @@ const styles = StyleSheet.create({
     color: '#514E5A',
     fontWeight: '600',
   },
+  inputFocus: {
+    marginTop: 30,
+    height: 50,
+    width: 300,
+    borderWidth: 2,
+    borderColor: '#D81B60',
+    borderRadius: 30,
+    paddingHorizontal: 16,
+    color: '#D81B60',
+    fontWeight: '600',
+  },
   next: {
     alignItems: 'center',
     marginTop: 50,
@@ -139,7 +155,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 70 / 2,
-    backgroundColor: '#9075E3',
+    backgroundColor: '#D81B60',
     alignItems: 'center',
     justifyContent: 'center'
   }

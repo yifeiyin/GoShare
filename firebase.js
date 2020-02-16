@@ -3,7 +3,7 @@ import firebase from 'firebase'
 class Firebase {
     constructor() {
         this.init()
-        this.checkAuth()
+        // this.checkAuth()
     }
 
     init = () => {
@@ -51,13 +51,13 @@ class Firebase {
         firebase.database().ref('messages/').on('value', callback);
     }
 
-    checkAuth = () => {
-        firebase.auth().onAuthStateChanged(user => {
-            if (!user) {
-                firebase.auth().signInAnonymously();
-            }
-        });
-    };
+    // checkAuth = () => {
+    //     firebase.auth().onAuthStateChanged(user => {
+    //         if (!user) {
+    //             firebase.auth().signInAnonymously();
+    //         }
+    //     });
+    // };
 
     send = (messages, to) => {
         messages.forEach(item => {
@@ -97,9 +97,9 @@ class Firebase {
         return firebase.database().ref("messages");
     }
 
-    get uid() {
-        return (firebase.auth().currentUser || {}).uid;
-    }
+    // get uid() {
+    //     return (firebase.auth().currentUser || {}).uid;
+    // }
 }
 
 export default new Firebase();

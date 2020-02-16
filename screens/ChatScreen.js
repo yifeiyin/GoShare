@@ -24,7 +24,7 @@ export default class ChatScreen extends React.Component {
   get user() {
     return {
       _id: CurrentUser.get(),
-      name: CurrentUser.get()
+      name: CurrentUser.get(),
     }
   }
 

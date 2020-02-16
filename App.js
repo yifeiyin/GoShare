@@ -21,7 +21,13 @@ const tabNavigator = createStackNavigator({
   ChatScreen,
   TransferScreen,
 }, {
-  initialRouteName: 'AuthScreen'
+  initialRouteName: 'AuthScreen',
+  defaultNavigationOptions: {
+    headerTintColor: '#514E5A',
+    headerTitleStyle: {
+      fontWeight: '700',
+    }
+  },
 });
 
 const App = createAppContainer(tabNavigator);

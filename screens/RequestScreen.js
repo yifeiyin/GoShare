@@ -24,40 +24,13 @@ export default class RequestScreen extends React.Component {
   });
 
   holders = []
-  chats = ''
+  // chats = ''
 
   state = {
     selectedItem: 'Please Select',
     selectedPlace: 'Please Select',
-    datetime: new Date(),
+    dateTime: new Date(),
     actionSheetOptions: OPTION_1,
-  }
-
-  send = () => {
-    let message = [
-      {
-        _id: 1,
-        text: 'I would like to request for a ' + this.state.selectedItem
-          + ' at ' + this.state.datetime.toLocaleTimeString() + '. Should we meet at ' + this.state.selectedPlace + ' ?',
-        createdAt: new Date(),
-        user: {
-          _id: CurrentUser.get(),
-          name: CurrentUser.get(),
-        }
-      }
-    ]
-
-    for (let item of this.holders) {
-      if (item.item.startsWith(this.state.selectedItem)) {
-        if (item.username != CurrentUser.get()) {
-          Firebase.send(message, item.username)
-        }
-      }
-    }
-
-    Alert.alert("Warning",
-      "Your request has been sent")
-    this.props.navigation.navigate("MapScreen")
   }
 
   componentDidMount() {
@@ -71,25 +44,56 @@ export default class RequestScreen extends React.Component {
       this.holders = holders;
     });
 
-    this.firebaseItemsLister = Firebase.onUsersChange((data) => {
-      data = data.val();
-      console.log(data)
-      let chats = '';
-      for (let key in data) {
-        if (key == CurrentUser.get()) {
-          let item = data[key];
-          chats = item.chat;
-        }
-      }
-      console.log(chats)
-      this.chats = chats;
-    });
+    // this.firebaseItemsLister = Firebase.onUsersChange((data) => {
+    //   data = data.val();
+    //   console.log(data)
+    //   let chats = '';
+    //   for (let key in data) {
+    //     if (key == CurrentUser.get()) {
+    //       let item = data[key];
+    //       chats = item.chat;
+    //     }
+    //   }
+    //   console.log(chats)
+    //   this.chats = chats;
+    // });
   }
 
   componentWillUnmount() {
     Firebase.off(this.firebaseItemsLister);
   }
 
+  send = () => {
+    if (!check(this.state.selectedItem, this.state.selectedPlace)) {
+      Alert.alert('Warning', 'Something is empty')
+    } else {
+      let message = [
+        {
+          _id: 1,
+          text: 'I would like to request for a ' + this.state.selectedItem
+            + ' at ' + format24HourMin(this.state.dateTime)
+            + '. Should we meet at ' + this.state.selectedPlace + ' ?',
+          createdAt: new Date(),
+          user: {
+            _id: CurrentUser.get(),
+            name: CurrentUser.get(),
+          }
+        }
+      ]
+
+      for (let item of this.holders) {
+        if (item.item.startsWith(this.state.selectedItem)) {
+          if (item.username != CurrentUser.get()) {
+            Firebase.send(message, item.username)
+          }
+        }
+      }
+
+      Alert.alert("Success",
+        "Your request has been sent")
+      this.props.navigation.navigate("MapScreen")
+    }
+  }
 
   showActionSheet = (option) => {
     this.setState({ actionSheetOptions: option == 'OPTION_1' ? OPTION_1 : OPTION_2 }, () => {
@@ -124,32 +128,26 @@ export default class RequestScreen extends React.Component {
             I would like to request a
             </Text>
 
-          <Text style={styles.itemSelectedText}>
-            {this.state.selectedItem}
-          </Text>
-
           <TouchableOpacity
-            style={styles.select}
             onPress={() => this.showActionSheet('OPTION_1')}>
-            <Text style={styles.selectText}>
-              Select
-              </Text>
+            <Text style={styles.itemSelectedText}>
+              {this.state.selectedItem}
+            </Text>
           </TouchableOpacity>
 
         </View>
 
         <View style={styles.whenView}>
           <Text style={styles.itemText}>
-            I need it today at ...
+            I need it today at
             </Text>
 
-          <Text style={styles.itemSelectedText}>
-            {format24HourMin(this.state.datetime)}
-          </Text>
-
           <DatePicker
-            date={new Date()}
-            onChange={(newValue) => this.setState({ datetime: newValue })} />
+            date={this.state.dateTime}
+            onChange={(newValue) => this.setState({ dateTime: newValue })}
+          />
+
+
         </View>
 
         <View style={styles.whereView}>
@@ -157,24 +155,27 @@ export default class RequestScreen extends React.Component {
             I would like to pick it up at
             </Text>
 
-          <Text style={styles.itemSelectedText}>
-            {this.state.selectedPlace}
-          </Text>
-
           <TouchableOpacity
-            style={styles.select}
             onPress={() => this.showActionSheet('OPTION_2')}>
-            <Text style={styles.selectText}>
-              Select
-              </Text>
+            <Text style={styles.itemSelectedText}>
+              {this.state.selectedPlace}
+            </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.sendView}>
           <TouchableOpacity
-            style={styles.send}
+            style={
+              check(this.state.selectedItem, this.state.selectedPlace)
+                ? styles.sendReady
+                : styles.send}
             onPress={this.send}>
-            <FontAwesome5 name='paper-plane' color='#514E5A' size={35} />
+            <FontAwesome5
+              style={check(this.state.selectedItem, this.state.selectedPlace)
+                ? styles.iconReady
+                : styles.icon}
+              name='paper-plane'
+              size={35} />
           </TouchableOpacity>
         </View>
 
@@ -182,6 +183,15 @@ export default class RequestScreen extends React.Component {
     );
   }
 }
+
+function check(item, place) {
+  if (item == 'Please Select'
+    || place == 'Please Select') {
+    return false
+  } else {
+    return true
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -206,20 +216,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#D81B60',
     marginTop: 10,
-  },
-  select: {
-    width: 120,
-    borderWidth: 2,
-    borderColor: "#514E5A",
-    borderRadius: 30,
-    alignSelf: 'center',
-    marginTop: 10,
-  },
-  selectText: {
-    fontSize: 20,
-    color: "#514E5A",
-    fontWeight: "500",
-    alignSelf: 'center'
   },
   whenView: {
     flexDirection: 'column',
@@ -247,4 +243,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  sendReady: {
+    width: 70,
+    height: 70,
+    borderRadius: 70 / 2,
+    backgroundColor: '#D81B60',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  icon: {
+    color: '#514E5A',
+  },
+  iconReady: {
+    color: '#fff',
+  }
 });
