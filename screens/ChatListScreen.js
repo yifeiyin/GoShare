@@ -20,7 +20,7 @@ export default class ChatListScreen extends React.Component {
     this.firebaseItemsLister = Firebase.onMessagesChange((data) => {
       data = data.val();
       let chats = []
-      Object.values(data).sort((a, b) => a.timestamp - b.timestamp).forEach(item => {
+      Object.values(data).sort((a, b) => b.timestamp - a.timestamp).forEach(item => {
         if ((item.to == CurrentUser.get()) && (check(chats, item.user.name)) && (item.user.name != CurrentUser.get())) {
           chats.push({ to: item.user.name, message: item.text });
         } else if ((item.user.name == CurrentUser.get()) && (check(chats, item.to)) && (item.to != CurrentUser.get())) {
@@ -68,6 +68,10 @@ function check(chats, name) {
     }
   }
   return true
+}
+
+function compare(previous, current) {
+
 }
 
 const styles = StyleSheet.create({
