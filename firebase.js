@@ -33,6 +33,12 @@ class Firebase {
         });
     }
 
+    updateItemOwnership(itemId, username) {
+        firebase.database().ref('items/' + itemId).update({
+            username,
+        });
+    }
+
     addUser(name) {
         firebase.database().ref('users/' + name).set({ exist: 'exist' });
     }

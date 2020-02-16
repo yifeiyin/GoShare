@@ -30,7 +30,9 @@ export default class MapScreen extends React.Component {
         markers.push({ coords: item.coords, title: key, description: item.username });
       }
       this.setState({ markers });
+      this.currentItemsHolding = Object.entries(data).filter(([itemName, item]) => item.username == CurrentUser.get()).map(([itemName, item]) => itemName);
     });
+
 
     this.recordLocationTimeOut = this.startRecordingLocation();
   }
@@ -58,7 +60,7 @@ export default class MapScreen extends React.Component {
     a();
     return setInterval(() => {
       a();
-    }, 5000);
+    }, 2000);
   };
 
   getUserLocation = async () => {

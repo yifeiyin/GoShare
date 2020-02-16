@@ -1,13 +1,20 @@
 import React from 'react';
-import { Platform, KeyboardAvoidingView, SafeAreaView, View, Text } from 'react-native';
+import { KeyboardAvoidingView, SafeAreaView, View, Text, Button } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from '../firebase';
 import { CurrentUser } from '../helper';
-import { NavigationContext } from 'react-navigation';
 
 export default class ChatScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: navigation.getParam('to', 'Chat'),
+    headerRight: () => (
+      <Button
+        title='Transfer'
+        onPress={() => {
+          navigation.navigate('TransferScreen', { toUsername: navigation.getParam('to') })
+        }}
+      />
+    )
   });
 
   state = {

@@ -11,6 +11,7 @@ import MapScreen from './screens/MapScreen';
 import RequestScreen from './screens/RequestScreen';
 import ChatListScreen from './screens/ChatListScreen';
 import ChatScreen from './screens/ChatScreen';
+import TransferScreen from './screens/TransferScreen';
 
 const tabNavigator = createStackNavigator({
   AuthScreen,
@@ -18,6 +19,7 @@ const tabNavigator = createStackNavigator({
   RequestScreen,
   ChatListScreen,
   ChatScreen,
+  TransferScreen,
 }, {
   initialRouteName: 'AuthScreen'
 });
