@@ -1,0 +1,51 @@
+{
+  "items" : {
+    "Calculator_1" : {
+      "coords" : {
+        "accuracy" : 5,
+        "altitude" : 0,
+        "altitudeAccuracy" : -1,
+        "heading" : -1,
+        "latitude" : 43.787196,
+        "longitude" : -79.190494,
+        "speed" : -1
+      },
+      "username" : "CXY"
+    },
+    "Power-Bank_2" : {
+      "coords" : {
+        "accuracy" : 65,
+        "altitude" : 121,
+        "altitudeAccuracy" : 10,
+        "heading" : -1,
+        "latitude" : 43.78685843333116,
+        "longitude" : -79.18938010411169,
+        "speed" : -1
+      },
+      "username" : "Yifei"
+    },
+    "USB-C_1" : {
+      "coords" : {
+        "accuracy" : 65,
+        "altitude" : 121,
+        "altitudeAccuracy" : 10,
+        "heading" : -1,
+        "latitude" : 43.78686806987246,
+        "longitude" : -79.18935532702908,
+        "speed" : -1
+      },
+      "username" : "Jack"
+    }
+  },
+  "users" : {
+    "CXY" : {
+      "exist" : "exist"
+    },
+    "Jack" : {
+      "exist" : "exist"
+    },
+    "Yifei" : {
+      "exist" : "exist"
+    }
+  }
+}
