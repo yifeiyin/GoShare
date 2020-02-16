@@ -33,12 +33,19 @@ class Firebase {
     }
 
     addUser(name) {
-        firebase.database().ref('users/').push({
-          username: name,
-          chat: '',
+        firebase.database().ref('users/' + name).set({
+          chat: 'A',
         });
     }
-    
+
+    onUsersChange(callback) {
+        firebase.database().ref('users/').on('value', callback);
+    }
+
+    onMessagesChange(callback) {
+        firebase.database().ref('messages/').on('value', callback);
+    }
+
     checkAuth =()=>{
         firebase.auth().onAuthStateChanged( user => {
             if (!user){
@@ -47,9 +54,10 @@ class Firebase {
         });
     };
 
-    send = messages => {
+    send = (messages, to) => {
         messages.forEach(item => {
             const message = {
+                to: to,
                 text: item.text,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
                 user: item.user
@@ -65,7 +73,7 @@ class Firebase {
         const createdAt = new Date(timestamp);
 
         return {
-            id,
+            _id,
             createdAt,
             text,
             user
