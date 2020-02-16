@@ -6,6 +6,9 @@ import { CurrentUser } from '../helper';
 import { NavigationContext } from 'react-navigation';
 
 export default class ChatScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => ({
+    headerTitle: navigation.getParam('to', 'Chat'),
+  });
 
   state = {
     messages: []
@@ -59,14 +62,14 @@ export default class ChatScreen extends React.Component {
   render() {
     const toUserId = this.props.navigation.getParam('to');
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
         <GiftedChat
           messages={this.state.messages}
           onSend={(messages) => Firebase.send(messages, toUserId)}
           user={this.user}
           isKeyboardInternallyHandled={false}
         />
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50} enable />
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={85} enable />
       </SafeAreaView>
     );
   }

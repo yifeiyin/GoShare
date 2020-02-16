@@ -16,7 +16,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
-    headerShown: false
+    headerShown: false,
+    headerTitle: 'Map',
   };
 
   componentDidMount() {
