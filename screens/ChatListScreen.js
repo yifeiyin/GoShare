@@ -71,6 +71,7 @@ export default class ChatListScreen extends React.Component {
             keyExtractor={(item) => item.to}
             style={styles.list}
             data={this.state.chats}
+            ListEmptyComponent={() => <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 40 }}><Text style={{ color: '#514E5A', fontWeight: '600', fontSize: 18 }}>Request an item to start a conversation with other people.</Text></View>}
             renderItem={({ item }) =>
               <TouchableOpacity style={styles.conversation}
                 onPress={() => this.startChat(item)}>
