@@ -22,7 +22,7 @@ Built with React Native, Expo, firebase. Used [react-native-maps](https://github
 > Disclaimer:
 > 
 > This is a hackathon project, nothing is garenteed to work. 
-
+- Ensure you have node and expo installed.
 - `git clone https://github.com/yifeiyin/GoShare && cd GoShare`
 - `npm install`
 - `expo start`
