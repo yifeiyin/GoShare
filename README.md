@@ -4,7 +4,7 @@
 
 An item tracking + messaging platform for university students to share small items such as charging cables, calculators.
 
-This is [the project submission](https://devpost.com/software/fluffy-potato) to [Hack The Valley 4](https://hackthevalley.io), took place on February 14-16 2020, in UofT Scarborough. This project ranked top 10 out of over 100 submissions.
+This is [the project submission](https://devpost.com/software/fluffy-potato) to [Hack The Valley 4](https://hackthevalley.io), took place on February 14-16 2020, in UofT Scarborough. **This project ranked top 10 out of over 100 submissions.**
 
 Built with React Native, Expo, firebase. Used [react-native-maps](https://github.com/react-native-community/react-native-maps), [gifted-chat](https://github.com/FaridSafi/react-native-gifted-chat), [firebase](https://github.com/invertase/react-native-firebase).
 
